@@ -1,6 +1,66 @@
 import re
 import json
 
+"""
+"+proj=cea +lon_0=%.16g +lat_ts=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=bonne +lon_0=%.16g +lat_1=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=cass +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=nzmg +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=etmerc +lat_0=%.16g +lon_0=%.16g +k=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=utm +zone=%d "
+"+proj=utm +zone=%d +south ",
+"+proj=tmerc +lat_0=%.16g +lon_0=%.16g +k=%.16g +x_0=%.16g +y_0=%.16g "
+"+proj=tmerc +lat_0=%.16g +lon_0=%.16g +k=%.16g +x_0=%.16g +y_0=%.16g +axis=wsu ",
+"+proj=merc +lon_0=%.16g +k=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=merc +lon_0=%.16g +lat_ts=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=merc +lon_0=%.16g +lat_ts=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=merc +a=%.16g +b=%.16g +lat_ts=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g +k=%.16g +units=m +nadgrids=@null +wktext  +no_defs",
+"+proj=sterea +lat_0=%.16g +lon_0=%.16g +k=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=stere +lat_0=%.16g +lon_0=%.16g +k=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=stere +lat_0=90 +lat_ts=%.16g +lon_0=%.16g +k=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=stere +lat_0=-90 +lat_ts=%.16g +lon_0=%.16g +k=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=eqc +lat_ts=%.16g +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=gstmerc +lat_0=%.16g +lon_0=%.16g +k_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=gnom +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=ortho +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=laea +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=aeqd +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=eqdc +lat_0=%.16g +lon_0=%.16g +lat_1=%.16g +lat_2=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=mill +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g +R_A ",
+"+proj=moll +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=eck1 +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=eck2 +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=eck3 +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=eck4 +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=eck5 +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=eck6 +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=poly +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=aea +lat_1=%.16g +lat_2=%.16g +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=robin +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=vandg +lon_0=%.16g +x_0=%.16g +y_0=%.16g +R_A ",
+"+proj=sinu +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=gall +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=goode +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=igh "
+"+proj=geos +lon_0=%.16g +h=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=lcc +lat_1=%.16g +lat_2=%.16g +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=lcc +lat_1=%.16g +lat_0=%.16g +lon_0=%.16g +k_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=somerc +lat_0=%.16g +lon_0=%.16g +k_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=omerc +lat_0=%.16g +lonc=%.16g +alpha=%.16g +k=%.16g +x_0=%.16g +y_0=%.16g +no_uoff ",
+"+proj=somerc +lat_0=%.16g +lon_0=%.16g +k_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=omerc +lat_0=%.16g +lonc=%.16g +alpha=%.16g +k=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=tpeqd +lat_1=%.16g +lon_1=%.16g +lat_2=%.16g +lon_2=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=iwm_p +lat_1=%.16g +lat_2=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=wag1 +x_0=%.16g +y_0=%.16g ",
+"+proj=wag2 +x_0=%.16g +y_0=%.16g ",
+"+proj=wag3 +lat_ts=%.16g +x_0=%.16g +y_0=%.16g ",
+"+proj=wag4 +x_0=%.16g +y_0=%.16g ",
+"+proj=wag5 +x_0=%.16g +y_0=%.16g ",
+"+proj=wag6 +x_0=%.16g +y_0=%.16g ",
+"+proj=wag7 +x_0=%.16g +y_0=%.16g ",
+"+proj=somerc +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
+"""
+
 def testWKT(code):
     sumCode = 0
     codeWords = ['GEOGCS','GEOCCS','PROJCS','LOCAL_CS']
@@ -33,7 +93,7 @@ def mapit(obj, key, v):
     
 
 def sExpr(v, obj):
-    if not isinstance(v, List):
+    if not isinstance(v, list):
         obj[v] = True
         return
     else:
@@ -43,7 +103,7 @@ def sExpr(v, obj):
             key = v[0]
             v = v[1:]
         if len(v) == 1:
-            if isinstance(v[0], List):
+            if isinstance(v[0], list):
                 obj[key] = {}
                 sExpr(v[0], obj[key])
             else:
@@ -56,7 +116,7 @@ def sExpr(v, obj):
             obj[key] = {}
             if ['UNIT', 'PRIMEM', 'VERT_DATUM'].count(key) > 0:
                 obj[key] = {
-                    'name': v[0].lower()
+                    'name': v[0].lower(),
                     'convert': v[1]
                 }
                 if len(v) == 3:
@@ -73,7 +133,7 @@ def sExpr(v, obj):
             else:
                 allItemList = True 
                 for item in v:
-                    if not isinstance(item, List):
+                    if not isinstance(item, list):
                         allItemList = False
                         break
                 if allItemList:
@@ -82,13 +142,17 @@ def sExpr(v, obj):
                     sExpr(v, obj[key])
 
 def rename(obj, params):
-  outName = params[0]
-  inName = params[1]
-  if !(outName in obj) && (inName in obj):
-    obj[outName] = obj[inName]
-    if params.length === 3:
-      obj[outName] = params[2](obj[outName])
-
+    outName = params[0]
+    inName = params[1]
+    if (outName not in obj) and (inName not in obj):
+        obj[outName] = obj[inName]
+        if params.length == 3:
+            obj[outName] = params[2](obj[outName])
+            
+def d2r(_input):
+    D2R = 0.01745329251994329577
+    return _input * D2R 
+    
 def cleanWKT(wkt):
     if wkt["type"] == 'GEOGCS':
         wkt["projName"] = 'longlat'
@@ -106,7 +170,7 @@ def cleanWKT(wkt):
         if wkt['units'] == 'metre':
             wkt['units'] = 'meter'
         if wkt['UNIT']['convert']:
-            wkt['to_meter'] = parseFloat(wkt['UNIT']['convert'], 10)
+            wkt['to_meter'] = float(wkt['UNIT']['convert'])
 
     if wkt['GEOGCS']:
         if wkt['GEOGCS']['DATUM']:
@@ -114,8 +178,8 @@ def cleanWKT(wkt):
         else:
             wkt['datumCode'] = wkt['GEOGCS']['name'].lower()
 
-        if wkt['datumCode'].slice(0, 2) == 'd_':
-            wkt['datumCode'] = wkt['datumCode'].slice(2)
+        if wkt['datumCode'][:2] == 'd_':
+            wkt['datumCode'] = wkt['datumCode'][2:]
 
         if wkt['datumCode'] == 'new_zealand_geodetic_datum_1949' or wkt['datumCode'] == 'new_zealand_1949':
             wkt['datumCode'] = 'nzgd49'
@@ -125,32 +189,35 @@ def cleanWKT(wkt):
                 wkt['sphere'] = True
             wkt['datumCode'] = 'wgs84';
 
-        if wkt['datumCode'].slice(-6) == '_ferro':
-            wkt['datumCode'] = wkt['datumCode'].slice(0, - 6)
+        if wkt['datumCode'][-6:] == '_ferro':
+            wkt['datumCode'] = wkt['datumCode'][:-6]
 
-        if wkt['datumCode'].slice(-8) == '_jakarta':
-            wkt['datumCode'] = wkt['datumCode'].slice(0, - 8)
+        if wkt['datumCode'][-8:] == '_jakarta':
+            wkt['datumCode'] = wkt['datumCode'][:-8]
 
-        if ~wkt['datumCode'].indexOf('belge'):
+        if wkt['datumCode'].find('belge') > -1:
             wkt['datumCode'] = "rnb72"
 
         if wkt['GEOGCS']['DATUM'] and wkt['GEOGCS']['DATUM']['SPHEROID']:
-            wkt["ellps"] = wkt['GEOGCS']['DATUM']['SPHEROID']['name'].replace('_19', '').replace(/[Cc]larke\_18/, 'clrk')
-            if wkt["ellps"].toLowerCase().slice(0, 13) === "international":
+            wkt["ellps"] = wkt['GEOGCS']['DATUM']['SPHEROID']['name'].replace('_19', '')
+            wkt["ellps"] = re.sub(r'[Cc]larke\_18', 'clrk', wkt["ellps"])
+            if wkt["ellps"].lower()[:13] == "international":
                 wkt["ellps"] = 'intl'
 
             wkt["a"] = wkt['GEOGCS']['DATUM']['SPHEROID']['a']
-            wkt["rf"] = parseFloat(wkt['GEOGCS']['DATUM']['SPHEROID']['rf'], 10)
+            wkt["rf"] = float(wkt['GEOGCS']['DATUM']['SPHEROID']['rf'])
 
-        if wkt['datumCode'].indexOf('osgb_1936'):
+        if wkt['datumCode'].find('osgb_1936')> -1:
             wkt['datumCode'] = "osgb36"
 
-    if wkt["b"] and !isFinite(wkt["b"]): # not number
+    if wkt["b"] and (not wkt["b"].isdigit()): # not number
         wkt["b"] = wkt["a"]
 
-    def toMeter(input):
-        ratio = wkt['to_meter'] || 1
-        return parseFloat(input, 10) * ratio
+    def toMeter(_input):
+        ratio = 1 
+        if 'to_meter' in wkt:
+            ratio = wkt["to_meter"]
+        return float(_input) * ratio
 
     def renamer(a):
         return rename(wkt, a)
@@ -193,7 +260,7 @@ def wkt(code):
     _type = lisp[0]
     _name = lisp[1]
     lisp = lisp[2:]
-    lisp = ['output', 'type', _type, 'name', _name] + lisp
+    lisp = ['output', ['type', _type], ['name', _name]] + lisp
    
     obj = {}
     sExpr(lisp, obj)
@@ -203,3 +270,10 @@ def wkt(code):
 def parse(code):
     if testWKT(code):
         wkt(code)
+
+
+
+firstProjection = 'PROJCS["NAD83 / Massachusetts Mainland",GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["standard_parallel_1",42.68333333333333],PARAMETER["standard_parallel_2",41.71666666666667],PARAMETER["latitude_of_origin",41],PARAMETER["central_meridian",-71.5],PARAMETER["false_easting",200000],PARAMETER["false_northing",750000],AUTHORITY["EPSG","26986"],AXIS["X",EAST],AXIS["Y",NORTH]]'
+
+
+parse(firstProjection)
