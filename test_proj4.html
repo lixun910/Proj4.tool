@@ -6,7 +6,12 @@ var secondProjection = "+proj=gnom +lat_0=90 +lon_0=0 +x_0=6300000 +y_0=6300000 
 a = proj4(firstProjection,secondProjection,[2,5]);
 console.log(a);
 
-secondProjection = "+proj=test +lat_0=90 +lon_0=0 +x_0=6300000 +y_0=6300000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
-a = proj4(firstProjection,secondProjection,[2,5]);
-console.log(a);
+var ip = 'PROJCS["NAD83_New_York_East_ftUS",GEOGCS["GCS_North_American_1983",DATUM["D_North_American_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",38.83333333333334],PARAMETER["central_meridian",-74.5],PARAMETER["scale_factor",0.9999],PARAMETER["false_easting",492125],PARAMETER["false_northing",0],UNIT["Foot_US",0.30480060960121924]]';
+
+var op = proj4.defs('WGS84');
+
+
+a = proj4(ip,op)
+b=a.forward([ 638435.51060043892, 690005.60069153551 ]);
+console.log(b);
 </script>
